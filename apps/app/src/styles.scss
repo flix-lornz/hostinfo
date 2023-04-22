@@ -1,1 +1,27 @@
 /* You can add global styles to this file, and also import other style files */
+:root {
+  //sidebar
+  //--sidebar-width: 1rem; //CSS variables / Custom properties --
+  //usually in root element for global scope
+
+  //colors
+  --test: hsl(41, 76%, 39%);
+  //color: hsl(grey);
+  --sidebar-background: 200, 84%, 23%;
+  --sidebar-text: 0, 0%, 0%;
+  --info-background: 180, 89%, 27%;
+  --button-background: 200, 60%, 74%;
+
+  //category colors
+  --category-background: 41, 76%, 39%;
+  --category-text: 0, 0%, 0%;
+}
+html,
+body {
+  font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande',
+    'Lucida Sans', Arial, sans-serif;
+}
+
+body {
+  margin: 0 0 0 0; //margin values: top, left, bottom, right
+}

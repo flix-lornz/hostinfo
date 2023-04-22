@@ -1,0 +1,39 @@
+.container {
+  background-color: hsla(var(--category-background));
+  color: hsla(var(--category-text));
+  // rgb(189, 65, 65);
+  text-align: center;
+  width: 800px;
+  height: 300px;
+  padding: 0.5rem;
+
+  border-radius: 0.4rem;
+}
+
+.buttons {
+  list-style: none;
+  display: flex;
+  padding: 0;
+  gap: 1rem;
+  justify-content: center;
+
+  //child
+  button {
+    $size: 6rem;
+    width: $size;
+    height: calc($size / 3);
+    background-color: hsl(var(--button-background));
+
+    opacity: 0.8;
+    cursor: pointer;
+    outline: none;
+    border: none;
+    border-radius: 0.25rem;
+
+    transition: 400ms cubic-bezier(0.5, 1, 0.1, 1) all; //800*0.1 on hover;  800*0.5 off hover
+    &:hover {
+      opacity: 1;
+      color: white;
+    }
+  }
+}

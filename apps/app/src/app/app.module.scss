@@ -1,1 +1,27 @@
 /* Your styles goes here. */
+
+//align-items in flexbox horizontal alignment
+//justify-content in flexbox vertical alignment
+.shell {
+  display: grid;
+  gap: 0;
+  //max-height: 30px;
+  //padding: 30px;
+  //margin: 0 5rem 0 0; //margin values: top, left, bottom, right
+
+  //assigning areas to the grid
+  grid-template-areas:
+    'heading sidebar'
+    'category sidebar';
+  grid-template-rows: 25vh 75vh;
+  grid-template-columns: 85vw 15vw;
+
+  // viewport width and viewport height
+  // 100vw - all available space including margin
+  // 100% - excludes margin and references size according to parent
+  width: 100vw;
+  height: 100vh;
+
+  background-color: hsl(var(--info-background));
+  //text-align: center; ->  in apps.tsx h1 placeSelf: 'center'
+}

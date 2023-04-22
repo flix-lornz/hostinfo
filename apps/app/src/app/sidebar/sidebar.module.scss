@@ -1,0 +1,47 @@
+:root {
+  --sidebar-padding: 1rem;
+}
+
+.container {
+  background-color: hsl(var(--sidebar-background));
+  -webkit-text-fill-color: hsl(var(--sidebar-text));
+  padding: var(--sidebar-padding);
+  text-align: center;
+  align-self: right;
+  min-width: 160px;
+  font-weight: bold;
+
+  img {
+    background-color: hsl(var(--sidebar-background));
+    color: hsla(var(--sidebar-text));
+    margin-top: 1rem;
+    margin-bottom: 0.6rem;
+    cursor: pointer;
+    outline: none;
+    border: none;
+    height: auto;
+    transition: 400ms cubic-bezier(0.5, 1, 0.1, 1) all; //800*0.1 on hover;  800*0.5 off hover
+  }
+
+  #hostLogo {
+    width: 150px;
+  }
+
+  .langIcons {
+    padding: 5px;
+    width: 40px;
+    opacity: 0.9;
+    &:hover {
+      width: 45px;
+      opacity: 1;
+    }
+  }
+
+  #qrCode {
+    padding: 0;
+    margin-top: 4rem;
+    border: 2px solid black;
+    width: 100px;
+    cursor: auto;
+  }
+}
