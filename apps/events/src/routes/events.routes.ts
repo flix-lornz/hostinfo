@@ -34,16 +34,41 @@ const isInfoSysEvent = (isEvent: any): isEvent is InfoSysEvent =>
   !isNaN(isEvent.id) && !!isEvent.name;
 //console.log(!!isInfoSysEvent.name)
 
+//define / route and attach get and post :
+router
+  .route('/')
+
+  //get all events as array
+  .get((req, res) => {
+    return res.json(events);
+  })
+
+  // === PUSH ===
+  //create event and push it to events list
+  .post((req: RequestWithUser, res) => {
+    const event = req.body;
+
+    if (!req.body) {
+      console.info('is not an event');
+      return res.status(400).json('Not a valid event');
+    }
+
+    if (!isInfoSysEvent(event)) {
+      return res.status(409).json('Not a valid Event');
+    }
+
+    //push
+    events.push(event);
+    return res.status(201).json(event);
+  });
+
 //===== GET =====
 // GET path = /api/events specified in main.ts
 
-//GET Example:
-//res.json(events[0].name); get name from index 0
-
-//get all events as array
-router.get('/', (req, res) => {
-  return res.json(events);
-});
+/* 
+GET Example:
+res.json(events[0].name); get name from index 0 
+*/
 
 //get events with id
 router.get('/:id/', (req: RequestWithUser, res) => {
@@ -67,25 +92,7 @@ router.get('/:id/', (req: RequestWithUser, res) => {
   return res.json(event_by_ID);
 });
 
-//===== POST =====
-router.post('/', (req: RequestWithUser, res) => {
-  const event = req.body;
-
-  if (!req.body) {
-    console.info('is not an event');
-    return res.status(400).json('Not a valid event');
-  }
-
-  if (!isInfoSysEvent(event)) {
-    return res.status(409).json('Not a valid Event');
-  }
-
-  //push
-  events.push(event);
-  return res.status(201).json(event);
-});
-
-//PATCH
+//====PATCH====
 router.patch('/:id', (req: RequestWithUser, res) => {
   const id = +req.params.id;
 
@@ -121,7 +128,7 @@ router.patch('/:id', (req: RequestWithUser, res) => {
 router.delete('/:id', (req: RequestWithUser, res) => {
   const id = +req.params.id;
   if (isNaN(id)) {
-    const message = `ID ivalid: not a number.`;
+    const message = `ID invalid: not a number.`;
     console.info(message);
     return res.status(404).json(message);
   }
