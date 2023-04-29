@@ -1,8 +1,3 @@
-/**
- * This is not a production server yet!
- * This is only a minimal backend to get started.
- */
-
 import express from 'express';
 import { json } from 'body-parser';
 import * as path from 'path';
@@ -17,12 +12,13 @@ app.use('/assets', express.static(path.join(__dirname, 'assets')));
 app.use(json());
 
 app.use('/api/events', authMiddleware());
-
-//REST for events (event.routes.ts)
 app.use('/api/events', eventsRouter);
 
+//start server and listen on Port env varriable or fallback 3333
 const port = process.env.PORT || 3333;
 const server = app.listen(port, () => {
   console.log(`Listening at http://localhost:${port}/api`);
 });
+
+//Log errors
 server.on('error', console.error);

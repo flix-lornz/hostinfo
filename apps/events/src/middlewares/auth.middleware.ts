@@ -12,7 +12,7 @@ import { RequestWithUser } from '../models/request-with-user.model';
 // console.info(req.ip);
 
 export const authMiddleware = () => (req: RequestWithUser, res, next) => {
-  const user = { name: 'Lex Ronzel' };
+  const user = { name: 'Fiz Ronzel' };
   req.user = user;
 
   next();
