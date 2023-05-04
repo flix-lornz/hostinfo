@@ -41,11 +41,7 @@ export function Sidebar({ className, id, style }: SidebarProps) {
       ></img>
       <div>Choose Language</div>
 
-      <img
-        id={classNames(styles['qrCode'], id)}
-        src={qrCode}
-        alt="qrCode"
-      ></img>
+      <img id={styles['qrCode']} src={qrCode} alt="qrCode"></img>
       <div>Scan Me!</div>
     </div>
   );
