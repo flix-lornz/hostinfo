@@ -1,6 +1,4 @@
-import { InfosysEvent } from '../models/infosys-event.model';
-import { byId } from '../utils/array.utils';
-import { NotFoundError } from '../utils/status.error';
+import { InfosysEvent, PrismaClient } from '@prisma/client';
 
 /**
  * Repository to interact with events database.
@@ -9,64 +7,67 @@ import { NotFoundError } from '../utils/status.error';
  * need to adjust his implementation and not the usage within our routers/controllers.
  */
 export class EventsRepository {
+  private get events() {
+    return this.prisma.infosysEvent;
+  }
+
   /**
    * Provide DB via dependency injection to de-couple the database instance from this repository.
    * Useful for testing since you can provide your own simple mock DB in a test and the real one
    * in production.
    */
-  constructor(private db: InfosysEvent[]) {}
+  constructor(private prisma: PrismaClient) {}
 
   /** Check if an event with ID exists in database. */
-  hasEvent(id: InfosysEvent['id']): boolean {
-    return this.db.some(byId(id));
+  async hasEvent(id: InfosysEvent['id']): Promise<boolean> {
+    //.count returns Prisma.PrismaPromise.
+    // promise only in async methods => 'async hasEvent' , 'await this.events...'
+    const count = await this.events.count({ where: { id } });
+    return count > 0; //returns boolean. Alternative: !!count
   }
 
   /** Get a single event by ID. */
-  getEvent(id: InfosysEvent['id']): InfosysEvent | undefined {
-    return this.db.find(byId(id));
+  getEvent(id: InfosysEvent['id']): Promise<InfosysEvent | null> {
+    return this.events.findUnique({ where: { id } });
   }
 
   /** Get the list of all events. */
-  getEvents(): InfosysEvent[] {
-    return this.db;
+  getEvents(): Promise<InfosysEvent[]> {
+    return this.events.findMany();
   }
 
   /** Create a new event with unique ID and insirt into DB. */
-  createEvent(eventDto: Omit<InfosysEvent, 'id'>) {
-    const id = this.db.length;
-    const event: InfosysEvent = { ...eventDto, id };
-
-    this.db.push(event);
-
-    return event;
+  createEvent(eventDto: Omit<InfosysEvent, 'id'>): Promise<InfosysEvent> {
+    return this.events.create({ data: eventDto });
   }
 
   /** Partially update an event by ID. */
   updateEvent(
     id: InfosysEvent['id'],
     eventDto: Partial<InfosysEvent>
-  ): InfosysEvent {
-    const index = this.db.findIndex((event) => event.id === id);
+  ): Promise<InfosysEvent> {
+    return this.events.update({ where: { id }, data: eventDto });
 
-    if (index < 0) throw new NotFoundError(id);
-
-    // ...(spread operator) copies all properties of the original event this.db[index]
-    // and updates/overwrites them with new properties from eventDto
-    // updating only keys with different value
-    const updatedEvent: InfosysEvent = { ...this.db[index], ...eventDto };
-    this.db.splice(index, 1, updatedEvent);
-
-    return updatedEvent;
+    // // const index = this.db.findIndex((event) => event.id === id);
+    // // if (index < 0) throw new NotFoundError(id);
+    /**
+     *  ...(spread operator) copies all properties of the original event this.db[index]
+     * and updates/overwrites them with new properties from eventDto
+     * updating only keys with different value
+     */
+    // const updatedEvent: InfosysEvent = { ...this.db[index], ...eventDto };
+    // this.db.splice(index, 1, updatedEvent);
+    // return updatedEvent;
   }
 
   /** Delete an event from the database. */
-  deleteEvent(id: InfosysEvent['id']): InfosysEvent[] {
-    const index = this.db.findIndex((event) => event.id === id);
-
-    if (index < 0) throw new NotFoundError(id);
-
-    this.db.splice(index, 1);
-
+  async deleteEvent(id: InfosysEvent['id']): Promise<InfosysEvent[]> {
+    await this.events.delete({ where: { id } });
     return this.getEvents();
+
+    // const index = this.db.findIndex((event) => event.id === id);
+    // if (index < 0) throw new NotFoundError(id);
+    // this.db.splice(index, 1);
+    // return this.getEvents();
   }
 }

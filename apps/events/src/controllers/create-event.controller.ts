@@ -6,7 +6,7 @@ import { EventsRepository } from '../services/events.repository';
 //create new Event and push it to list of events
 export const createEvent =
   (events: EventsRepository): RequestHandler =>
-  async (req, res) => {
+  async (req: RequestWithUser, res) => {
     const eventDto = req.body; //Dto: Data Transfer Object
     //check if event has a body
     if (!req.body)

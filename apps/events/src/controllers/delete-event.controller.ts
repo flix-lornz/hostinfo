@@ -7,12 +7,20 @@ export const deleteEvent =
   async (req, res) => {
     try {
       const id = +req.params.id;
+      console.log(id);
       // Check id path param is valid
       if (isNaN(id)) {
         const message = `Id ${id} is not a number.`;
         console.info(message);
-
         return res.status(400).json({ message });
+      }
+
+      //get event from db via repository
+      const event = await events.getEvent(id);
+      //check if event exoists in db
+      if (!event) {
+        console.info(`Event with ID ${id} not found.`);
+        return res.status(404).json('Event not found.');
       }
 
       // Get event from db via repository

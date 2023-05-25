@@ -1,0 +1,18 @@
+generator client {
+  provider        = "prisma-client-js"
+  output = "../../../node_modules/@hostinfo/events-prisma"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = "file:./db.sqlite"
+}
+
+
+model InfosysEvent {  
+  id Int @id @default(autoincrement())
+  name String
+  description String 
+  author String
+  date DateTime
+}

@@ -4,13 +4,15 @@ import { EventsRepository } from '../services/events.repository';
 //get all Events
 export const readEventList =
   (events: EventsRepository): RequestHandler =>
-  (req, res) =>
-    res.json(events.getEvents());
+  async (req, res) => {
+    const eventList = await events.getEvents();
+    return res.json(eventList);
+  };
 
 // get single event from events[] by id
 export const readEvent =
   (events: EventsRepository): RequestHandler<{ id: string }> =>
-  (req, res) => {
+  async (req, res) => {
     const id = +req.params.id; //typecast anything to number with + (here: req.params is string)
 
     //check if path param is valid
@@ -22,8 +24,7 @@ export const readEvent =
     }
 
     //get event from db via repository
-    const event = events.getEvent(id);
-
+    const event = await events.getEvent(id);
     //check if event exoists in db
     if (!event) {
       console.info(`Event with ID ${id} not found.`);

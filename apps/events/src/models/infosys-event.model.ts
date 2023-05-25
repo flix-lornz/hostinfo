@@ -1,10 +1,4 @@
-export interface InfosysEvent {
-  id: number;
-  name: string;
-  description: string;
-  author: string;
-  date: string;
-}
+import { InfosysEvent } from '@hostinfo/auth-prisma';
 
 /** Assert an object is of type InfosysEvent. */
 export const isInfosysEvent = (

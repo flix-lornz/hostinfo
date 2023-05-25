@@ -15,3 +15,15 @@ export class BadRequestError extends StatusError {
     super(`Request is malformed`, 400);
   }
 }
+
+export class UnauthorizedError extends StatusError {
+  constructor() {
+    super(`Request is malformed`, 401);
+  }
+}
+
+export class ForbiddenError extends StatusError {
+  constructor() {
+    super(`Request is malformed`, 403);
+  }
+}

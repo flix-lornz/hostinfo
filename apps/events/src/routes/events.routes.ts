@@ -2,11 +2,13 @@ import { Router } from 'express';
 import { readEvent, readEventList } from '../controllers/read-event.controller';
 import { createEvent } from '../controllers/create-event.controller';
 import { EventsRepository } from '../services/events.repository';
-import { events } from '../db';
 import { updateEvent } from '../controllers/update-event.controller';
 import { deleteEvent } from '../controllers/delete-event.controller';
+import { prisma } from '../services/prisma.service';
 
-const eventsRepo = new EventsRepository(events);
+//create repository for the events and provide database via dependency injection
+//...Dependency injection is used to make a class independent of its dependencies...
+const eventsRepo = new EventsRepository(prisma);
 export const router = Router();
 
 router
