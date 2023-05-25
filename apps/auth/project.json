@@ -8,6 +8,7 @@
       "executor": "@nrwl/webpack:webpack",
       "outputs": ["{options.outputPath}"],
       "defaultConfiguration": "production",
+      "dependsOn": ["prisma-generate"],
       "options": {
         "target": "node",
         "compiler": "tsc",
@@ -26,6 +27,7 @@
     "serve": {
       "executor": "@nrwl/js:node",
       "defaultConfiguration": "development",
+      "dependsOn": ["prisma-generate", "prisma-deploy"],
       "options": {
         "buildTarget": "auth:build"
       },

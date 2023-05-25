@@ -1,18 +1,21 @@
-import { sign } from 'jsonwebtoken';
+import { sign, verify } from 'jsonwebtoken';
 import { compare } from 'bcrypt';
-import { PrismaClient, User } from '@hostinfo/auth-prisma';
+import { User } from '@hostinfo/auth-prisma';
 import {
   BEARER_PREFIX,
+  ForbiddenError,
   NotFoundError,
   UnauthorizedError,
 } from '@hostinfo/node-common';
-import { LoginDto } from '@hostinfo/dtos';
-import { prisma } from './prisma.service';
+import { LoginDto, UserDto } from '@hostinfo/dtos';
+import { UserRepository, userRepo } from './user.repository';
 
+//production secret - never hardcode
 const SECRET = process.env.SECRET ?? 'secret-abc123';
+const EXPIRATION = '1h';
 
 class AuthService {
-  constructor(private users: PrismaClient['user']) {}
+  constructor(private users: UserRepository) {}
   /**
    * 1. User logs in on Frontend
    * 2. Frontend sends gettToken /api/login request to Backend
@@ -21,14 +24,14 @@ class AuthService {
    */
 
   public async createToken({ username, password }: LoginDto) {
-    // const user = await this.users.findUnique({ where: { username } });
-    // if (!user) throw new NotFoundError();
+    const user = await this.users.getUserByUsername(username);
+    if (!user) throw new NotFoundError();
 
-    // const isValidPwd = compare(password, user.password);
-    // if (!isValidPwd) throw new UnauthorizedError();
+    const isValidPwd = await compare(password, user.password);
+    if (!isValidPwd) throw new UnauthorizedError();
 
-    return sign({ sub: 1 }, SECRET, {
-      expiresIn: '1h',
+    return sign({ sub: user.id }, SECRET, {
+      expiresIn: EXPIRATION,
       algorithm: 'HS256',
     });
   }
@@ -42,14 +45,24 @@ class AuthService {
    * 6. Execute API function
    */
 
-  public validateToken(
-    bearer: `${typeof BEARER_PREFIX} ${string}`
-  ): Promise<User> {
+  public async validateToken(
+    bearer: `${typeof BEARER_PREFIX}${string}`
+  ): Promise<UserDto> {
     //split produces array. 1. index is empty since 'Bearer ' is beginning of string
     const [, token] = bearer.split('Bearer ');
-    console.log(token);
+    const payload = verify(token, SECRET, {
+      maxAge: EXPIRATION,
+      algorithms: ['HS256'],
+    });
+
+    if (typeof payload === 'string' || payload.sub == null)
+      throw new ForbiddenError();
+
+    const user = await this.users.getUser(+payload.sub);
+    if (!user) throw new ForbiddenError();
+    //console.log(token);
     return user;
   }
 }
 
-export const authService = new AuthService(prisma.user);
+export const authService = new AuthService(userRepo);

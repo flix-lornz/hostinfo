@@ -1,19 +1,17 @@
-import { RequestWithUser } from '../models/request-with-user.model';
+import { RequestWithUser, handleHttpError } from '@hostinfo/node-common';
+import axios from 'axios';
+import { RequestHandler } from 'express';
 
-//middleware = handlerfunction
+export const auth =
+  (): RequestHandler => async (req: RequestWithUser, res, next) => {
+    try {
+      await axios.get('http://localhost:3334/api/verify', {
+        headers: { Authorization: req.headers.authorization },
+      });
 
-/*for auth of Roles user or admin for later implementation*/
-// type Role = 'user' | 'admin';
-
-/* adding options for Role*/
-// export const authMiddleware =
-// (options: { roles: Role[] }) =>
-// (req: RequestWithUser, res, next) => {
-// console.info(req.ip);
-
-export const authMiddleware = () => (req: RequestWithUser, res, next) => {
-  const user = { name: 'Fiz Ronzel' };
-  req.user = user;
-
-  next();
-};
+      next();
+    } catch (err) {
+      const { code, body } = handleHttpError(err);
+      res.status(code).json(body);
+    }
+  };

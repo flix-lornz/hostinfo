@@ -1,4 +1,4 @@
-import { InfosysEvent, PrismaClient } from '@prisma/client';
+import { InfosysEvent, PrismaClient } from '@hostinfo/events-prisma'; //'@prisma/client';
 
 /**
  * Repository to interact with events database.

@@ -1,7 +1,9 @@
 import { RequestHandler } from 'express';
-import { RequestWithUser } from '../models/request-with-user.model';
+import { RequestWithUser } from '@hostinfo/node-common';
 import { isInfosysEvent } from '../models/infosys-event.model';
 import { EventsRepository } from '../services/events.repository';
+
+// '../models/request-with-user.model';
 
 //create new Event and push it to list of events
 export const createEvent =

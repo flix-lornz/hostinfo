@@ -1,26 +1,29 @@
 import { Router } from 'express';
 import { authService } from '../services/auth.service';
 import { LoginDto } from '@hostinfo/dtos';
-import { BadRequestError, StatusError } from '@hostinfo/node-common';
+import { BadRequestError, RequestWithUser } from '@hostinfo/node-common';
+import { auth } from '../middlewares/auth.middleware';
 
-export const router = Router();
+export const authRouter = () => {
+  const router = Router();
 
-router.post<LoginDto>('/login', async (req, res) => {
-  try {
-    const dto = req.body;
-    if (!dto?.password || !dto?.username) throw new BadRequestError(); //? = if (dto)
+  router.post<LoginDto>('/login', async (req, res) => {
+    try {
+      const dto = req.body;
+      if (!dto?.password || !dto?.username) throw new BadRequestError(); //? = if (dto)
 
-    const token = await authService.createToken(dto);
+      const token = await authService.createToken(dto);
 
-    return res.json({ token });
-  } catch (err) {
-    console.error(err);
-    if (err instanceof StatusError) {
+      return res.json({ token });
+    } catch (err) {
+      console.error(err);
       return res.status(err.code ?? 500).json({ err: err.message });
     }
-  }
-});
+  });
 
-router.get('/verify', () => {
-  console.log('TODO');
-});
+  router.get('/verify', auth(), (req: RequestWithUser, res) => {
+    res.json(req.user);
+  });
+
+  return router;
+};

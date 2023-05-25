@@ -1,4 +1,4 @@
-import { Prisma } from '@infosys/auth-prisma';
+import { Prisma } from '@hostinfo/auth-prisma';
 import {
   BadRequestError,
   ConflictError,
