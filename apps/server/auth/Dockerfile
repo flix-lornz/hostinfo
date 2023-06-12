@@ -1,3 +1,5 @@
+#------------ 1. Stage
+
 FROM node:18 as builder
 WORKDIR /app
 
@@ -7,14 +9,21 @@ RUN yarn install --frozen-lockfile
 RUN yarn nx build auth --prod
 RUN yarn nx prisma-deploy auth
 
-#WORKDIR /app
-#FROM node:18
+#----------- 2. Stage
+
+#FROM 
 
 
-#COPY --from=builder /build/dist/apps/server/auth /app
-#COPY --from=builder /build/node_modules /app/node_modules
-#COPY --from=builder /build/package.json /app
- 
+FROM node:18
 
-CMD [ "node", "/app/dist/apps/server/auth/main" ]
+ENV NODE_ENV=production
+
+WORKDIR /app
+
+COPY --from=builder /build/package.json .
+COPY --from=builder /build/yarn.lock .
+COPY --from=builder /build/node_modules/@hostinfo/auth-prisma node_modules/@hostinfo/auth-prisma
+RUN yarn install --frozen-lockfile --prod
+
+CMD [ "node", "/app/main" ]
 EXPOSE 3334
