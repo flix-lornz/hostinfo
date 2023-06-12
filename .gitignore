@@ -37,6 +37,5 @@ testem.log
 # System Files
 .DS_Store
 Thumbs.db
-apps/events/prisma/**/*
-!apps/events/prisma/schema.prisma
+apps/**/prisma/db
 

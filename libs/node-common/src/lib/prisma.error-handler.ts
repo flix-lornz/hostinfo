@@ -1,4 +1,4 @@
-import { Prisma } from '@hostinfo/auth-prisma';
+import { Prisma } from '../../../../apps/node_modules/@hostinfo/auth-prisma';
 import {
   BadRequestError,
   ConflictError,

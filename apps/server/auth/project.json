@@ -1,0 +1,105 @@
+{
+  "name": "auth",
+  "$schema": "../../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "apps/server/auth/src",
+  "projectType": "application",
+  "targets": {
+    "build": {
+      "executor": "@nrwl/webpack:webpack",
+      "outputs": ["{options.outputPath}"],
+      "defaultConfiguration": "production",
+      "dependsOn": ["prisma-generate"],
+      "options": {
+        "target": "node",
+        "compiler": "tsc",
+        "outputPath": "dist/apps/server/auth",
+        "main": "apps/server/auth/src/main.ts",
+        "tsConfig": "apps/server/auth/tsconfig.app.json",
+        "assets": ["apps/server/auth/src/assets"],
+        "isolatedConfig": true,
+        "webpackConfig": "apps/server/auth/webpack.config.js"
+      },
+      "configurations": {
+        "development": {},
+        "production": {
+          "assets": [
+            "apps/server/auth/src/assets",
+            "apps/server/auth/src/prisma/migrations",
+            "apps/server/auth/src/prisma/schema.prisma"
+          ]
+        }
+      }
+    },
+    "serve": {
+      "executor": "@nrwl/js:node",
+      "defaultConfiguration": "development",
+      "dependsOn": ["prisma-generate", "prisma-deploy"],
+      "options": {
+        "buildTarget": "auth:build"
+      },
+      "configurations": {
+        "development": {
+          "buildTarget": "auth:build:development"
+        },
+        "production": {
+          "buildTarget": "auth:build:production"
+        }
+      }
+    },
+    "lint": {
+      "executor": "@nrwl/linter:eslint",
+      "outputs": ["{options.outputFile}"],
+      "options": {
+        "lintFilePatterns": ["apps/server/auth/**/*.ts"]
+      }
+    },
+    "prisma-generate": {
+      "executor": "@nx-tools/nx-prisma:generate",
+      "options": {
+        "schema": "apps/server/auth/src/prisma/schema.prisma"
+      }
+    },
+    "prisma-migrate": {
+      "executor": "@nx-tools/nx-prisma:migrate",
+      "options": {
+        "schema": "apps/server/auth/src/prisma/schema.prisma"
+      }
+    },
+    "prisma-pull": {
+      "executor": "@nx-tools/nx-prisma:pull",
+      "options": {
+        "schema": "apps/server/auth/src/prisma/schema.prisma"
+      }
+    },
+    "prisma-push": {
+      "executor": "@nx-tools/nx-prisma:push",
+      "options": {
+        "schema": "apps/server/auth/src/prisma/schema.prisma"
+      }
+    },
+    "prisma-deploy": {
+      "executor": "@nx-tools/nx-prisma:deploy",
+      "options": {
+        "schema": "apps/server/auth/src/prisma/schema.prisma"
+      },
+      "configurations": {
+        "production": {
+          "schema": "dist/apps/server/auth/prisma/schema.prisma"
+        }
+      }
+    },
+    "prisma-status": {
+      "executor": "@nx-tools/nx-prisma:status",
+      "options": {
+        "schema": "apps/server/auth/src/prisma/schema.prisma"
+      }
+    },
+    "prisma-studio": {
+      "executor": "@nx-tools/nx-prisma:studio",
+      "options": {
+        "schema": "apps/server/auth/src/prisma/schema.prisma"
+      }
+    }
+  },
+  "tags": []
+}

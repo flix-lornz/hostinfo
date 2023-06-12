@@ -1,4 +1,4 @@
-import { User } from '@hostinfo/auth-prisma';
+import { User } from '../../../../apps/node_modules/@hostinfo/auth-prisma';
 
 /*
 Data transfer Object modell(object that carries data between processes)
